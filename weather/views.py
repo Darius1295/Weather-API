@@ -1,7 +1,8 @@
-import requests
 from django.shortcuts import render
+from django.shortcuts import redirect
 from .models import City
 from .forms import CityForm
+import requests
 
 
 def index(request):
@@ -13,23 +14,21 @@ def index(request):
 
     form = CityForm()
 
-    weather_list = []
     cities = City.objects.all()
 
     for city in cities:
-        r = requests.get(url.format(city)).json()
-        city_weather = {
-            'city': city.name,
-            'temperature': r['main']['temp'],
-            'description': r['weather'][0]['description'],
-            'icon': r['weather'][0]['icon']
-        }
-        print(city_weather)
-        weather_list.append(city_weather)
+        r = requests.get(url.format(city.name)).json()
+        city.temperature = r['main']['temp']
+        city.description = r['weather'][0]['description'].capitalize()
+        city.icon = r['weather'][0]['icon']
 
-    print(weather_list)
+    print(cities)
 
-    context = {'weather_list': weather_list, 'form': form}
-
+    context = {'cities': cities, 'form': form}
     return render(request, 'weather/weather.html', context)
 
+
+def delete_city(request, pk):
+    city = City.objects.get(pk=pk)
+    city.delete()
+    return redirect('weather:index')
