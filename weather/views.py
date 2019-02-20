@@ -8,12 +8,13 @@ import requests
 def index(request):
     url = 'http://api.openweathermap.org/data/2.5/weather?q={}&units=metric&appid=08daed9c87b5bb0b625b74e777a6762c'
 
+    form = CityForm()
+
     if request.method == 'POST':
         form = CityForm(request.POST)
         if form.is_valid():
             form.save()
-
-    form = CityForm()
+            form = CityForm
 
     cities = City.objects.all()
 

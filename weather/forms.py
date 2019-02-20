@@ -14,9 +14,9 @@ class CityForm(ModelForm):
         url = 'http://api.openweathermap.org/data/2.5/weather?q={}&units=metric&appid=08daed9c87b5bb0b625b74e777a6762c'
         r = requests.get(url.format(name)).json()
         if r['cod'] == "404":
-            raise ValidationError('Invalid value')
+            raise ValidationError('City not found. Please check if spelling is correct.')
         if r['cod'] == "400":
-            raise ValidationError('No value')
+            raise ValidationError('Please enter a city name.')
         else:
             return name
 
