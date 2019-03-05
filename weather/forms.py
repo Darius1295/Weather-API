@@ -6,7 +6,7 @@ import requests
 class CityForm(ModelForm):
     class Meta:
         model = City
-        fields = ['name']
+        fields = ['name', 'country']
         widgets = {'name': TextInput(attrs={'class': 'input', 'placeholder': 'City Name'})}
 
     def clean_name(self):

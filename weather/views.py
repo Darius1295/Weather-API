@@ -6,7 +6,7 @@ import requests
 
 
 def index(request):
-    url = 'http://api.openweathermap.org/data/2.5/weather?q={}&units=metric&appid=08daed9c87b5bb0b625b74e777a6762c'
+    url = 'http://api.openweathermap.org/data/2.5/weather?q={}{}{}&units=metric&appid=08daed9c87b5bb0b625b74e777a6762c'
 
     form = CityForm()
 
@@ -19,10 +19,14 @@ def index(request):
     cities = City.objects.all()
 
     for city in cities:
-        r = requests.get(url.format(city.name)).json()
+        if city.country == None:
+            r = requests.get(url.format(city.name,'', city.country)).json()
+        else:
+            r = requests.get(url.format(city.name, ',', city.country)).json()
         city.temperature = r['main']['temp']
         city.description = r['weather'][0]['description'].capitalize()
         city.icon = r['weather'][0]['icon']
+        city.country = r['sys']['country']
 
     print(cities)
 

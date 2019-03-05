@@ -7,7 +7,7 @@ class City(models.Model):
     temperature = models.FloatField(null=True, blank=True)
     description = models.CharField(max_length=20, blank=True)
     icon = models.FileField(blank=True)
-    country = CountryField(blank=True, blank_label='(select country)')
+    country = CountryField(blank=True, blank_label='select country (optional)')
 
     def __str__(self):
         return self.name

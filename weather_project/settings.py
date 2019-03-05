@@ -27,6 +27,9 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+COUNTRIES_FIRST = [
+    'GB', 'US'
+]
 
 # Application definition
 
