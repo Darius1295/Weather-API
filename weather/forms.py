@@ -22,5 +22,3 @@ class CityForm(ModelForm):
 
 
 
-
-
