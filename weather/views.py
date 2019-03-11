@@ -42,15 +42,15 @@ def delete_city(request, pk):
     return redirect('weather:index')
 
 
-def get_date(timestamp):
+def get_datetime(timestamp):
     return datetime.datetime.fromtimestamp(timestamp)
 
 
-def get_weekday(date):
-    if date.strftime('%Y-%m-%d') == datetime.date.today():
+def get_weekday(my_datetime):
+    if my_datetime.date() == datetime.date.today():
         return 'Today'
     else:
-        return calendar.day_name[date.weekday()]
+        return calendar.day_name[my_datetime.weekday()]
 
 
 def get_time(date):
@@ -76,8 +76,8 @@ def forecast(request, pk):
         'temperature' : r['list'][f]['main']['temp'],
         'description' : r['list'][f]['weather'][0]['description'].capitalize(),
         'icon' : r['list'][f]['weather'][0]['icon'],
-        'day' : get_weekday(get_date(r['list'][f]['dt'])),
-        'time' : get_time(get_date(r['list'][f]['dt']))
+        'day' : get_weekday(get_datetime(r['list'][f]['dt'])),
+        'time' : get_time(get_datetime(r['list'][f]['dt']))
         }
         forecast_data.append(weather_forecast)
 
@@ -97,13 +97,13 @@ def test(request, pk):
     else:
         r = requests.get(url.format(city.name, ',', city.country)).json()
 
-    date = get_date(r['list'][0]['dt'])
+    my_datetime = get_datetime(r['list'][0]['dt'])
 
-    s_date = date.strftime('%Y-%m-%d')
+    my_date = my_datetime.date()
 
     today = datetime.date.today()
 
-    context = {'city': city, 'test_url': test_url, 'date': date, 's_date': s_date, 'today': today}
+    context = {'city': city, 'test_url': test_url, 'my_datetime': my_datetime, 'my_date': my_date, 'today': today}
 
     return render(request, 'weather/test.html', context)
 
