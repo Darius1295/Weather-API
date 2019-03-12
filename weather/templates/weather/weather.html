@@ -74,7 +74,10 @@
                                             {{ city.country.name }}
                                             <br>
                                             <span class="subtitle">{{ city.temperature }} °C</span>
-                                            <br> {{ city.description }}
+                                            <br>
+                                            {{ city.description }}
+                                            <br>
+                                            <a href="{% url 'weather:forecast' city.id %}" class="btn btn-default btn-sm" role="button">Five Day Forecast</a>
                                             <form action="{% url 'weather:delete-city' city.id %}", method="post", style="display: inline;">
                                                 {% csrf_token %}
                                                 <input type="hidden" name="city_id" value="{{ city.id }}" />
