@@ -67,7 +67,7 @@ def forecast(request, pk):
     else:
         r = requests.get(url.format(city.name, ',', city.country)).json()
 
-    forecasts = range(39)
+    forecasts = range(r['cnt'])
 
     forecast_data = []
 
@@ -80,6 +80,8 @@ def forecast(request, pk):
         'time' : get_time(get_datetime(r['list'][f]['dt']))
         }
         forecast_data.append(weather_forecast)
+
+    print(forecast_data)
 
     context = {'city': city, 'forecast_data': forecast_data}
 
