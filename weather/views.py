@@ -5,6 +5,8 @@ from .forms import CityForm
 import requests
 import datetime
 import calendar
+from collections import defaultdict
+
 
 
 def index(request):
@@ -69,7 +71,7 @@ def forecast(request, pk):
 
     forecasts = range(r['cnt'])
 
-    forecast_data = []
+    forecast_dict = defaultdict(list)
 
     for f in forecasts:
         weather_forecast = {
@@ -79,9 +81,9 @@ def forecast(request, pk):
         'day' : get_weekday(get_datetime(r['list'][f]['dt'])),
         'time' : get_time(get_datetime(r['list'][f]['dt']))
         }
-        forecast_data.append(weather_forecast)
+        forecast_dict[weather_forecast['day']].append(weather_forecast)
 
-    print(forecast_data)
+    forecast_data = dict(forecast_dict)
 
     context = {'city': city, 'forecast_data': forecast_data}
 

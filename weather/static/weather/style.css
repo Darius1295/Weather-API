@@ -1,3 +1,8 @@
 body{
     background: #F5F5F5;
 }
+.scrolls {
+    overflow-x: scroll;
+    overflow-y: hidden;
+    white-space: nowrap;
+}
