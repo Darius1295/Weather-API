@@ -10,6 +10,9 @@
     {% load staticfiles %}
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="{% static 'weather/style.css' %}"/>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
+    <script src="//code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 </head>
 
 <body>
@@ -41,15 +44,19 @@
     </section>
     <section class="section">
         <div class="container">
-            <div class="columns is-multiline">
+            <div id="tabs">
+                <ul>
+                    {% for day, day_list in forecast_data.items %}
+                        <li> <a href="#{{ day }}"> <span class="title"> {{ day }} </span> </a> </li>
+                    {% endfor %}
+                </ul>
                 {% for day, day_list in forecast_data.items %}
-                    <div class="column is-12">
-                        <span class="title">{{ day }}</span>
+                    <div id="{{ day }}">
                         <div class="scrolls">
                             <div class="columns is-gapless">
                                 {% for weather_forecast in day_list %}
                                     <div class="column is-narrow">
-                                        <div class="box" style="width: 240px;">
+                                        <div class="box" style="width: 256px;">
                                             <article class="media">
                                                 <div class="media-left">
                                                     <figure class="image is-50x50">
@@ -75,5 +82,9 @@
                     </div>
                 {% endfor %}
             </div>
+            <script>
+            $( "#tabs" ).tabs();
+            </script>
         </div>
     </section>
+</body>
