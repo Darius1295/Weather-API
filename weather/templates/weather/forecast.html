@@ -8,11 +8,29 @@
     <title>Weather</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.6.2/css/bulma.css" />
     {% load staticfiles %}
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="{% static 'weather/style.css' %}"/>
 </head>
 
 <body>
     <section class="hero is-primary">
+        <div class="hero-head">
+            <nav class="navbar">
+                <div class="container">
+                    <div id="navbarMenuHeroA" class="navbar-menu">
+                        <div class="navbar-end">
+                            <a href="{% url 'weather:index' %}" class="navbar-item">
+                                <span class="icon">
+                                    <i class="fas fa-arrow-left"></i>
+                                </span>
+                                Back
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+        </div>
+
         <div class="hero-body">
             <div class="container">
                 <h1 class="title">
