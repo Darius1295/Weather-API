@@ -3,16 +3,12 @@ from django.shortcuts import redirect
 from .models import City
 from .forms import CityForm
 import requests
-import datetime
-import calendar
 from collections import defaultdict
-import pytz
-from timezonefinder import TimezoneFinder
+from .api_urls import weather_url, forecast_url
+from .datetime_functions import get_timezone, get_weekday, get_datetime, get_time
 
 
 def index(request):
-    url = 'http://api.openweathermap.org/data/2.5/weather?q={}{}{}&units=metric&appid=08daed9c87b5bb0b625b74e777a6762c'
-
     form = CityForm()
 
     if request.method == 'POST':
@@ -25,9 +21,9 @@ def index(request):
 
     for city in cities:
         if city.country == None:
-            r = requests.get(url.format(city.name, '', city.country)).json()
+            r = requests.get(weather_url.format(city.name, '', city.country)).json()
         else:
-            r = requests.get(url.format(city.name, ',', city.country)).json()
+            r = requests.get(weather_url.format(city.name, ',', city.country)).json()
         city.temperature = r['main']['temp']
         city.description = r['weather'][0]['description'].capitalize()
         city.icon = r['weather'][0]['icon']
@@ -43,35 +39,13 @@ def delete_city(request, pk):
     return redirect('weather:index')
 
 
-def get_datetime(timestamp):
-    return datetime.datetime.fromtimestamp(timestamp, tz=pytz.UTC)
-
-
-def get_weekday(my_datetime):
-    if my_datetime.date() == datetime.date.today():
-        return 'Today'
-    else:
-        return calendar.day_name[my_datetime.weekday()]
-
-
-def get_timezone(my_datetime, longitude, latitude):
-    my_tz = TimezoneFinder(in_memory=True).timezone_at(lng=longitude, lat=latitude)
-    return my_datetime.astimezone(pytz.timezone(my_tz))
-
-
-def get_time(date):
-    return date.strftime('%H:%M')
-
-
 def forecast(request, pk):
-    url = 'http://api.openweathermap.org/data/2.5/forecast?q={}{}{}&units=metric&appid=08daed9c87b5bb0b625b74e777a6762c'
-
     city = City.objects.get(pk=pk)
 
     if city.country == None:
-        r = requests.get(url.format(city.name, '', city.country)).json()
+        r = requests.get(forecast_url.format(city.name, '', city.country)).json()
     else:
-        r = requests.get(url.format(city.name, ',', city.country)).json()
+        r = requests.get(forecast_url.format(city.name, ',', city.country)).json()
 
     forecasts = range(r['cnt'])
 
@@ -98,15 +72,13 @@ def forecast(request, pk):
 
 
 def test(request, pk):
-    url = 'http://api.openweathermap.org/data/2.5/forecast?q={}{}{}&units=metric&appid=08daed9c87b5bb0b625b74e777a6762c'
-
     city = City.objects.get(pk=pk)
     test_url = url.format(city.name, ',', city.country)
 
     if city.country == None:
-        r = requests.get(url.format(city.name, '', city.country)).json()
+        r = requests.get(forecast_url.format(city.name, '', city.country)).json()
     else:
-        r = requests.get(url.format(city.name, ',', city.country)).json()
+        r = requests.get(forecast_url.format(city.name, ',', city.country)).json()
 
     my_datetime = get_datetime(r['list'][0]['dt'])
 
