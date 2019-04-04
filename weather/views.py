@@ -6,7 +6,8 @@ import requests
 import datetime
 import calendar
 from collections import defaultdict
-
+import pytz
+from timezonefinder import TimezoneFinder
 
 
 def index(request):
@@ -32,8 +33,6 @@ def index(request):
         city.icon = r['weather'][0]['icon']
         city.country = r['sys']['country']
 
-    print(cities)
-
     context = {'cities': cities, 'form': form}
     return render(request, 'weather/weather.html', context)
 
@@ -45,7 +44,7 @@ def delete_city(request, pk):
 
 
 def get_datetime(timestamp):
-    return datetime.datetime.fromtimestamp(timestamp)
+    return datetime.datetime.fromtimestamp(timestamp, tz=pytz.UTC)
 
 
 def get_weekday(my_datetime):
@@ -55,8 +54,13 @@ def get_weekday(my_datetime):
         return calendar.day_name[my_datetime.weekday()]
 
 
+def get_timezone(my_datetime, longitude, latitude):
+    my_tz = TimezoneFinder(in_memory=True).timezone_at(lng=longitude, lat=latitude)
+    return my_datetime.astimezone(pytz.timezone(my_tz))
+
+
 def get_time(date):
-    return date.time().strftime('%H:%M')
+    return date.strftime('%H:%M')
 
 
 def forecast(request, pk):
@@ -73,13 +77,16 @@ def forecast(request, pk):
 
     forecast_dict = defaultdict(list)
 
+    longitude = r['city']['coord']['lon']
+    latitude = r['city']['coord']['lat']
+
     for f in forecasts:
         weather_forecast = {
         'temperature' : r['list'][f]['main']['temp'],
         'description' : r['list'][f]['weather'][0]['description'].capitalize(),
         'icon' : r['list'][f]['weather'][0]['icon'],
-        'day' : get_weekday(get_datetime(r['list'][f]['dt'])),
-        'time' : get_time(get_datetime(r['list'][f]['dt']))
+        'day' : get_weekday(get_timezone(get_datetime(r['list'][f]['dt']), longitude, latitude)),
+        'time' : get_time(get_timezone(get_datetime(r['list'][f]['dt']), longitude, latitude))
         }
         forecast_dict[weather_forecast['day']].append(weather_forecast)
 
