@@ -47,12 +47,27 @@ def forecast(request, pk):
     else:
         r = requests.get(forecast_url.format(city.name, ',', city.country)).json()
 
+    if city.country == None:
+        rn = requests.get(weather_url.format(city.name, '', city.country)).json()
+    else:
+        rn = requests.get(weather_url.format(city.name, ',', city.country)).json()
+
     forecasts = range(r['cnt'])
 
     forecast_dict = defaultdict(list)
 
     longitude = r['city']['coord']['lon']
     latitude = r['city']['coord']['lat']
+
+    weather_now = {
+        'temperature' : rn['main']['temp'],
+        'description' : rn['weather'][0]['description'].capitalize(),
+        'icon' : rn['weather'][0]['icon'],
+        'day' : 'Today',
+        'time' : 'Now'
+    }
+
+    forecast_dict['Today'].append(weather_now)
 
     for f in forecasts:
         weather_forecast = {
@@ -73,7 +88,7 @@ def forecast(request, pk):
 
 def test(request, pk):
     city = City.objects.get(pk=pk)
-    test_url = url.format(city.name, ',', city.country)
+    test_url = forecast_url.format(city.name, ',', city.country)
 
     if city.country == None:
         r = requests.get(forecast_url.format(city.name, '', city.country)).json()
