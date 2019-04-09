@@ -3,3 +3,4 @@ weather_env/
 *.pyc
 .DS_Store
 weather/api_urls.py
+db.sqlite3
