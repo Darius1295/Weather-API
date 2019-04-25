@@ -4,8 +4,12 @@ from .models import City
 from .forms import CityForm
 import requests
 from collections import defaultdict
-from .api_urls import weather_url, forecast_url
+import os
 from .datetime_functions import get_timezone, get_weekday, get_datetime, get_time
+
+
+weather_url = os.environ.get("WEATHER_URL")
+forecast_url = os.environ.get("FORECAST_URL")
 
 
 def index(request):
