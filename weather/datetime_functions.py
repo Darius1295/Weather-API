@@ -16,7 +16,7 @@ def get_weekday(my_datetime):
 
 
 def get_timezone(my_datetime, longitude, latitude):
-    my_tz = TimezoneFinder(in_memory=True).timezone_at(lng=longitude, lat=latitude)
+    my_tz = TimezoneFinder(in_memory=False).timezone_at(lng=longitude, lat=latitude)
     return my_datetime.astimezone(pytz.timezone(my_tz))
 
 
