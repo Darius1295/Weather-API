@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.shortcuts import redirect
-from .models import City
+from .models import Bucket, City
 from .forms import CityForm
 import requests
 from collections import defaultdict
@@ -21,9 +21,17 @@ def index(request):
             form.save()
             form = CityForm
 
-    cities = City.objects.all()
+    bucket_obj, new_obj = Bucket.objects.new_or_get(request)
 
-    for city in cities:
+    print(bucket_obj, new_obj)
+
+    my_cities = bucket_obj.cities.all()
+
+    print(my_cities)
+
+    print(type(bucket_obj))
+
+    for city in my_cities:
         if city.country == None:
             r = requests.get(weather_url.format(city.name, '', city.country)).json()
         else:
@@ -33,7 +41,7 @@ def index(request):
         city.icon = r['weather'][0]['icon']
         city.country = r['sys']['country']
 
-    context = {'cities': cities, 'form': form}
+    context = {'cities': my_cities, 'form': form}
     return render(request, 'weather/weather.html', context)
 
 
