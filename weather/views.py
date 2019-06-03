@@ -13,15 +13,18 @@ forecast_url = os.environ.get("FORECAST_URL")
 
 
 def index(request):
+    bucket_obj, new_obj = Bucket.objects.new_or_get(request)
+
     form = CityForm()
 
     if request.method == 'POST':
         form = CityForm(request.POST)
         if form.is_valid():
-            form.save()
+            city_obj = form.save()
             form = CityForm
-
-    bucket_obj, new_obj = Bucket.objects.new_or_get(request)
+            print('Form: ' + str(city_obj) + ', Type: ' + str(type(city_obj)))
+            print('Bucket: ' + str(bucket_obj))
+            bucket_obj.cities.add(city_obj)
 
     print(bucket_obj, new_obj)
 
