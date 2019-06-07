@@ -1,6 +1,10 @@
 from django.forms import ModelForm, TextInput, ValidationError
 from .models import City
 import requests
+import os
+
+weather_url = os.environ.get("WEATHER_URL")
+forecast_url = os.environ.get("FORECAST_URL")
 
 
 class CityForm(ModelForm):
@@ -9,16 +13,28 @@ class CityForm(ModelForm):
         fields = ['name', 'country']
         widgets = {'name': TextInput(attrs={'class': 'input', 'placeholder': 'City Name'})}
 
-    def clean_name(self):
-        name = self.cleaned_data.get('name')
-        url = 'http://api.openweathermap.org/data/2.5/weather?q={}&units=metric&appid=08daed9c87b5bb0b625b74e777a6762c'
-        r = requests.get(url.format(name)).json()
-        if r['cod'] == "404":
-            raise ValidationError('City not found. Please check if spelling is correct.')
-        if r['cod'] == "400":
-            raise ValidationError('Please enter a city name.')
+    def clean(self):
+        cleaned_data = super().clean()
+        name = cleaned_data.get('name')
+        country = cleaned_data.get('country')
+        print("Cleaned name: " + str(name))
+        print("Cleaned country: " + str(country))
+        if country == '':
+            url = weather_url.format(name, '', '')
+            print(url)
+            r = requests.get(url).json()
         else:
-            return name
+            url = weather_url.format(name, ',', country)
+            print(url)
+            r = requests.get(url).json()
+        print(r)
+        if r['cod'] == "404":
+            print('City not found ValidationError')
+            raise ValidationError('City not found. Please check if spelling or country selected is correct.')
+        if r['cod'] == "400":
+            print('No city entered ValidationError')
+            raise ValidationError('Please enter a city name.')
+
 
 
 
