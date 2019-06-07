@@ -39,7 +39,7 @@ def index(request):
             r = requests.get(weather_url.format(city.name, '', city.country)).json()
         else:
             r = requests.get(weather_url.format(city.name, ',', city.country)).json()
-        city.temperature = r['main']['temp']
+        city.temperature = round(r['main']['temp'])
         city.description = r['weather'][0]['description'].capitalize()
         city.icon = r['weather'][0]['icon']
         city.country = r['sys']['country']
@@ -75,7 +75,7 @@ def forecast(request, pk):
     latitude = r['city']['coord']['lat']
 
     weather_now = {
-        'temperature' : rn['main']['temp'],
+        'temperature' : round(rn['main']['temp']),
         'description' : rn['weather'][0]['description'].capitalize(),
         'icon' : rn['weather'][0]['icon'],
         'day' : 'Today',
@@ -86,7 +86,7 @@ def forecast(request, pk):
 
     for f in forecasts:
         weather_forecast = {
-        'temperature' : r['list'][f]['main']['temp'],
+        'temperature' : round(r['list'][f]['main']['temp']),
         'description' : r['list'][f]['weather'][0]['description'].capitalize(),
         'icon' : r['list'][f]['weather'][0]['icon'],
         'day' : get_weekday(get_timezone(get_datetime(r['list'][f]['dt']), longitude, latitude)),
