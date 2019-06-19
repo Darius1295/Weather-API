@@ -35,6 +35,7 @@ def index(request):
     print(type(bucket_obj))
 
     for city in my_cities:
+        city.name = city.name.title()
         if city.country == None:
             r = requests.get(weather_url.format(city.name, '', city.country)).json()
         else:
@@ -56,6 +57,7 @@ def delete_city(request, pk):
 
 def forecast(request, pk):
     city = City.objects.get(pk=pk)
+    city.name = city.name.title()
 
     if city.country == None:
         r = requests.get(forecast_url.format(city.name, '', city.country)).json()
