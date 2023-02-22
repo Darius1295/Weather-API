@@ -25,8 +25,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # SECRET_KEY = os.environ.get("WEATHER_SECRET_KEY")
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get("DEBUG_VALUE") == "True"
+
 
 ALLOWED_HOSTS = ['*']
 
@@ -127,8 +129,12 @@ WSGI_APPLICATION = 'weather_project.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'railway',
+        'USER': 'postgres',
+        'PASSWORD': 'MndQBQpmcOFJI4PYw74F',
+        'HOST': 'containers-us-west-64.railway.app',
+        'PORT': '6449',
     }
 }
 
